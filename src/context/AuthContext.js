@@ -1,19 +1,4 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import { useToast } from './ToastContext';
-// API imports for authentication
-import { 
-  loginUser, 
-  registerUser, 
-  logoutUser, 
-  getCurrentUser, 
-  updateUserProfile,
-  changePassword,
-  isAuthenticated,
-  getAuthToken,
-  setAuthToken,
-  removeAuthToken,
-  handleApiError 
-} from '../services/api';
 
 const AuthContext = createContext();
 
@@ -78,7 +63,6 @@ export const AuthProvider = ({ children }) => {
     loading: false,
     error: null
   });
-  const { addToast } = useToast();
 
   // Check authentication status on app load
   useEffect(() => {
@@ -87,16 +71,23 @@ export const AuthProvider = ({ children }) => {
 
   /**
    * Check if user is authenticated and load user data
-   * API Call: GET /api/v1/auth/me
+   * Mock implementation
    */
   const checkAuthStatus = async () => {
-    if (!isAuthenticated()) return;
+    const token = localStorage.getItem('authToken');
+    if (!token) return;
 
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
       
-      const userData = await getCurrentUser();
-      const token = getAuthToken();
+      // Mock user data
+      const userData = {
+        id: 1,
+        email: 'user@example.com',
+        name: 'John Doe',
+        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+        created_at: '2024-01-01T00:00:00Z'
+      };
       
       dispatch({ 
         type: 'LOGIN_SUCCESS', 
@@ -104,18 +95,16 @@ export const AuthProvider = ({ children }) => {
       });
     } catch (error) {
       // Token might be expired, clear it
-      removeAuthToken();
+      localStorage.removeItem('authToken');
       dispatch({ type: 'LOGOUT' });
       
-      handleApiError(error, (err) => {
-        console.log('Auth check failed:', err.message);
-      });
+      console.log('Auth check failed:', error.message);
     }
   };
 
   /**
    * User login
-   * API Call: POST /api/v1/auth/login
+   * Mock implementation
    * @param {Object} credentials - Login credentials (email, password)
    */
   const login = async (credentials) => {
@@ -123,33 +112,41 @@ export const AuthProvider = ({ children }) => {
       dispatch({ type: 'SET_LOADING', payload: true });
       dispatch({ type: 'CLEAR_ERROR' });
       
-      const response = await loginUser(credentials);
-      
-      // Store token in localStorage
-      setAuthToken(response.token);
-      
-      dispatch({ 
-        type: 'LOGIN_SUCCESS', 
-        payload: { 
-          user: response.user, 
-          token: response.token 
-        } 
-      });
-      
-      addToast('Login successful!', 'success');
-      return response;
+      // Mock login validation
+      if (credentials.email === 'user@example.com' && credentials.password === 'password') {
+        const token = 'mock-jwt-token-' + Date.now();
+        const userData = {
+          id: 1,
+          email: credentials.email,
+          name: 'John Doe',
+          avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+          created_at: '2024-01-01T00:00:00Z'
+        };
+        
+        // Store token in localStorage
+        localStorage.setItem('authToken', token);
+        
+        dispatch({ 
+          type: 'LOGIN_SUCCESS', 
+          payload: { 
+            user: userData, 
+            token: token 
+          } 
+        });
+        
+        return { user: userData, token };
+      } else {
+        throw new Error('Invalid credentials');
+      }
     } catch (error) {
-      handleApiError(error, (err) => {
-        dispatch({ type: 'SET_ERROR', payload: err.message });
-        addToast('Login failed. Please check your credentials.', 'error');
-      });
+      dispatch({ type: 'SET_ERROR', payload: error.message });
       throw error;
     }
   };
 
   /**
    * User registration
-   * API Call: POST /api/v1/auth/register
+   * Mock implementation
    * @param {Object} userData - User registration data
    */
   const register = async (userData) => {
@@ -157,94 +154,84 @@ export const AuthProvider = ({ children }) => {
       dispatch({ type: 'SET_LOADING', payload: true });
       dispatch({ type: 'CLEAR_ERROR' });
       
-      const response = await registerUser(userData);
+      // Mock registration
+      const token = 'mock-jwt-token-' + Date.now();
+      const newUser = {
+        id: Date.now(),
+        ...userData,
+        created_at: new Date().toISOString()
+      };
       
       // Store token in localStorage
-      setAuthToken(response.token);
+      localStorage.setItem('authToken', token);
       
       dispatch({ 
         type: 'LOGIN_SUCCESS', 
         payload: { 
-          user: response.user, 
-          token: response.token 
+          user: newUser, 
+          token: token 
         } 
       });
       
-      addToast('Registration successful!', 'success');
-      return response;
+      return { user: newUser, token };
     } catch (error) {
-      handleApiError(error, (err) => {
-        dispatch({ type: 'SET_ERROR', payload: err.message });
-        addToast('Registration failed. Please try again.', 'error');
-      });
+      dispatch({ type: 'SET_ERROR', payload: error.message });
       throw error;
     }
   };
 
   /**
    * User logout
-   * API Call: POST /api/v1/auth/logout
+   * Mock implementation
    */
   const logout = async () => {
     try {
-      // Call logout API
-      await logoutUser();
-    } catch (error) {
-      // Even if API call fails, we should still logout locally
-      console.error('Logout API failed:', error);
-    } finally {
       // Clear token and user data
-      removeAuthToken();
+      localStorage.removeItem('authToken');
       dispatch({ type: 'LOGOUT' });
-      addToast('Logged out successfully', 'success');
+    } catch (error) {
+      console.error('Logout failed:', error);
     }
   };
 
   /**
    * Update user profile
-   * API Call: PUT /api/v1/auth/profile
+   * Mock implementation
    * @param {Object} profileData - Updated profile data
    */
   const updateProfile = async (profileData) => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
       
-      const updatedUser = await updateUserProfile(profileData);
+      const updatedUser = { ...state.user, ...profileData };
       
       dispatch({ 
         type: 'UPDATE_USER', 
         payload: updatedUser 
       });
       
-      addToast('Profile updated successfully!', 'success');
       return updatedUser;
     } catch (error) {
-      handleApiError(error, (err) => {
-        dispatch({ type: 'SET_ERROR', payload: err.message });
-        addToast('Failed to update profile', 'error');
-      });
+      dispatch({ type: 'SET_ERROR', payload: error.message });
       throw error;
     }
   };
 
   /**
    * Change user password
-   * API Call: PUT /api/v1/auth/change-password
+   * Mock implementation
    * @param {Object} passwordData - Password change data
    */
   const changeUserPassword = async (passwordData) => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
       
-      await changePassword(passwordData);
+      // Mock password change
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       dispatch({ type: 'SET_LOADING', payload: false });
-      addToast('Password changed successfully!', 'success');
     } catch (error) {
-      handleApiError(error, (err) => {
-        dispatch({ type: 'SET_ERROR', payload: err.message });
-        addToast('Failed to change password', 'error');
-      });
+      dispatch({ type: 'SET_ERROR', payload: error.message });
       throw error;
     }
   };

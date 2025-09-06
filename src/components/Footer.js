@@ -115,29 +115,29 @@ const Footer = () => {
               <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-red-200">Quick Links</h3>
               <ul className="space-y-2 sm:space-y-3">
                 <li>
-                  <a href="#" className="text-gray-300 hover:text-white transition-colors duration-200 hover:translate-x-1 inline-block text-sm sm:text-base">
+                  <button className="text-gray-300 hover:text-white transition-colors duration-200 hover:translate-x-1 inline-block text-sm sm:text-base">
                     About Us
-                  </a>
+                  </button>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-300 hover:text-white transition-colors duration-200 hover:translate-x-1 inline-block text-sm sm:text-base">
+                  <button className="text-gray-300 hover:text-white transition-colors duration-200 hover:translate-x-1 inline-block text-sm sm:text-base">
                     Contact
-                  </a>
+                  </button>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-300 hover:text-white transition-colors duration-200 hover:translate-x-1 inline-block text-sm sm:text-base">
+                  <button className="text-gray-300 hover:text-white transition-colors duration-200 hover:translate-x-1 inline-block text-sm sm:text-base">
                     Privacy Policy
-                  </a>
+                  </button>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-300 hover:text-white transition-colors duration-200 hover:translate-x-1 inline-block text-sm sm:text-base">
+                  <button className="text-gray-300 hover:text-white transition-colors duration-200 hover:translate-x-1 inline-block text-sm sm:text-base">
                     Terms of Service
-                  </a>
+                  </button>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-300 hover:text-white transition-colors duration-200 hover:translate-x-1 inline-block text-sm sm:text-base">
+                  <button className="text-gray-300 hover:text-white transition-colors duration-200 hover:translate-x-1 inline-block text-sm sm:text-base">
                     Shipping Info
-                  </a>
+                  </button>
                 </li>
               </ul>
             </div>

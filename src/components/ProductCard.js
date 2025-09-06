@@ -1,13 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
+  const { addToast } = useToast();
 
   const handleAddToCart = (e) => {
     e.preventDefault();
     addToCart(product);
+    addToast(`${product.name} added to cart`, 'success');
   };
 
   return (

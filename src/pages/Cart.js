@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
 
 const Cart = () => {
   const { items, updateQuantity, removeFromCart, getTotalPrice } = useCart();
+  const { addToast } = useToast();
 
   if (items.length === 0) {
     return (
@@ -73,7 +75,10 @@ const Cart = () => {
                       </div>
                       {/* Delete Button - Mobile Responsive */}
                       <button
-                        onClick={() => removeFromCart(item.id)}
+                        onClick={() => {
+                          removeFromCart(item.id);
+                          addToast(`${item.name} removed from cart`, 'error');
+                        }}
                         className="p-2 bg-red-600/20 hover:bg-red-600/40 text-red-400 hover:text-red-300 rounded-lg transition-all duration-200 hover:scale-110 border border-red-500/30 hover:border-red-400/50"
                         title="Remove item"
                       >

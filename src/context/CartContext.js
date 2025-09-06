@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useReducer } from 'react';
-import { useToast } from './ToastContext';
 // TODO: Uncomment when API is ready
 // import { 
 //   getCart, 
@@ -60,7 +59,6 @@ const cartReducer = (state, action) => {
 
 export const CartProvider = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, { items: [] });
-  const { addToast } = useToast();
 
   // Using mock data instead of API calls
   // TODO: Replace with API calls when backend is ready
@@ -71,7 +69,7 @@ export const CartProvider = ({ children }) => {
    */
   const addToCart = (product) => {
     dispatch({ type: 'ADD_TO_CART', payload: product });
-    addToast(`${product.name} added to cart`, 'success');
+    // Toast notification will be handled by the component using this context
   };
 
   /**
@@ -79,11 +77,8 @@ export const CartProvider = ({ children }) => {
    * @param {string|number} productId - Product ID to remove
    */
   const removeFromCart = (productId) => {
-    const item = state.items.find(item => item.id === productId);
     dispatch({ type: 'REMOVE_FROM_CART', payload: productId });
-    if (item) {
-      addToast(`${item.name} removed from cart`, 'error');
-    }
+    // Toast notification will be handled by the component using this context
   };
 
   /**
@@ -100,7 +95,7 @@ export const CartProvider = ({ children }) => {
    */
   const clearCart = () => {
     dispatch({ type: 'CLEAR_CART' });
-    addToast('Cart cleared', 'error');
+    // Toast notification will be handled by the component using this context
   };
 
   const getTotalPrice = () => {

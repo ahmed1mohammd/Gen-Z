@@ -1,12 +1,14 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
 import { products } from '../data/products';
 
 const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { addToast } = useToast();
   
   const product = products.find(p => p.id === parseInt(id));
 
@@ -28,6 +30,7 @@ const ProductDetails = () => {
 
   const handleAddToCart = () => {
     addToCart(product);
+    addToast(`${product.name} added to cart`, 'success');
   };
 
   return (
